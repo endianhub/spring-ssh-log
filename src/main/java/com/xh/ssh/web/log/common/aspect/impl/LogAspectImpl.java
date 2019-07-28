@@ -1,6 +1,7 @@
 package com.xh.ssh.web.log.common.aspect.impl;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.NamedThreadLocal;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -39,6 +41,8 @@ public class LogAspectImpl implements ILogAspect {
 
 	private static final String LOG_CONTENT = "[类名]:%s,[方法]:%s,[参数]:%s";
 	private static final String[] METHOD_CONTENT = { "insert", "delete", "update", "save", "edit", "remove" };
+
+	private static final ThreadLocal<Date> beginTimeThreadLocal = new NamedThreadLocal<Date>("ThreadLocal beginTime");
 
 	/**
 	 * <b>Title: </b>
@@ -70,6 +74,7 @@ public class LogAspectImpl implements ILogAspect {
 	@Before("beforAspect()")
 	@Override
 	public void before(JoinPoint point) {
+		LogTool.info(this.getClass(), " 前置通知");
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String methodName = point.getSignature().getName();
 		String className = point.getTarget().getClass().getName();
@@ -82,6 +87,7 @@ public class LogAspectImpl implements ILogAspect {
 	@Around("aroundAspect()")
 	@Override
 	public Object around(ProceedingJoinPoint point) throws Throwable {
+		LogTool.info(this.getClass(), " 环绕通知");
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String className = point.getTarget().getClass().getName();
 		String methodName = point.getSignature().getName();
@@ -106,6 +112,8 @@ public class LogAspectImpl implements ILogAspect {
 	@After("afterAspect()")
 	@Override
 	public void after(JoinPoint point) {
+		LogTool.info(this.getClass(), "后置通知");
+
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String className = point.getTarget().getClass().getName();
 		String methodName = point.getSignature().getName();
@@ -118,6 +126,7 @@ public class LogAspectImpl implements ILogAspect {
 	@AfterThrowing(value = "afterThrowingAspect()", throwing = "exception")
 	@Override
 	public void afterThrowing(JoinPoint point, Exception exception) {
+		LogTool.info(this.getClass(), "后置异常通知");
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String methodName = point.getSignature().getName();
 		Method[] methods = point.getTarget().getClass().getMethods();

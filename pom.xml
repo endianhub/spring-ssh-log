@@ -12,19 +12,18 @@
 	<properties>
 		<module.name>${project.artifactId}</module.name>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-		<commons.lang3.version>3.7</commons.lang3.version>
+		<commons.lang3.version>3.8.1</commons.lang3.version>
 		<commons.io.version>2.6</commons.io.version>
-		<junit.version>3.8.1</junit.version>
-		<spring.version>4.3.18.RELEASE</spring.version>
-		<fastjson.version>1.2.47</fastjson.version>
+		<junit.version>4.12</junit.version>
+		<spring.version>5.1.5.RELEASE</spring.version>
+		<fastjson.version>1.2.58</fastjson.version>
 		<druid.version>1.1.10</druid.version>
 		<mysql.version>5.1.40</mysql.version>
 		<hibernate.version>5.3.3.Final</hibernate.version>
-		<log4j.version>1.2.17</log4j.version>
-		<slf4j.version>1.7.25</slf4j.version>
+		<log4j2.version>2.11.1</log4j2.version>
 
-		<servlet.version>3.1.0</servlet.version>
-		<jackson.version>2.9.8</jackson.version>
+		<servlet.version>4.0.1</servlet.version>
+		<jackson.version>2.9.9</jackson.version>
 	</properties>
 
 	<dependencies>
@@ -126,8 +125,7 @@
 		</dependency>
 
 		<!-- hibernate核心 -->
-		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-core</artifactId> <version>5.3.3.Final</version> 
-			</dependency> -->
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-core</artifactId> <version>5.3.3.Final</version> </dependency> -->
 		<!-- （不赞成使用hibernate-core）Hibernate O / RM实现JPA规范 -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -140,8 +138,7 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 		<!-- hibernate信息校验 -->
-		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-validator</artifactId> <version>6.0.10.Final</version> 
-			</dependency> -->
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-validator</artifactId> <version>6.0.10.Final</version> </dependency> -->
 
 		<!-- fastjson -->
 		<dependency>
@@ -152,28 +149,20 @@
 
 		<!--日志 -->
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>test</scope>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-web</artifactId>
+			<version>${log4j2.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>test</scope>
-		</dependency>
-
 
 		<!-- servlet 如果用不到jsp个人认为没必要引用 -->
 		<dependency>
@@ -217,10 +206,45 @@
 			<version>${jackson.version}</version>
 		</dependency>
 
+
+		<!-- 学习地址：https://www.cnblogs.com/xiaoQ0725/p/8855120.html -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.9.2</version>
+		</dependency>
+
 	</dependencies>
 
 
 	<build>
 		<finalName>spring-ssh-log</finalName>
+		<plugins>
+			<!-- 指定maven编译的jdk版本,如果不指定,maven3默认用jdk 1.5 maven2默认用jdk1.3 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<!-- 一般而言，target与source是保持一致的，但是，有时候为了让程序能在其他版本的jdk中运行(对于低版本目标jdk，源代码中不能使用低版本jdk中不支持的语法)，会存在target不同于source的情况 -->
+					<source>1.8</source><!-- 源代码使用的JDK版本 -->
+					<target>1.8</target><!-- 需要生成的目标class文件的编译版本 -->
+					<encoding>UTF-8</encoding><!-- 字符集编码 -->
+				</configuration>
+			</plugin>
+
+			<!-- 配置Tomcat插件 ,用于启动项目 -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+
+		</plugins>
 	</build>
 </project>
